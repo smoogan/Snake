@@ -3,17 +3,19 @@ module World where
 import Graphics.Gloss.Interface.IO.Game
 import Snake
 import Debug.Trace
+import System.Random
 
 data World = World {
     snake :: Snake,
     score :: Int,
-    food :: Point
+    food :: Point,
+    time :: Float
 } deriving (Show)
 
 createWorld :: World
 createWorld = 
-    let _snake = Snake {position = (0,0), direction = None, len = 1}
-    in World {snake = _snake, score = 0, food=(2,2)}
+    let _snake = Snake {body = [(0,0)], direction = None, len = 1}
+    in World {snake = _snake, score = 0, food=(2,2), time=0}
 
 handleInput :: Event -> World -> World
 handleInput event _world
@@ -33,23 +35,45 @@ handleInput _ s = s
 moveFood :: World -> World
 moveFood _world =
     let
-        newPoint = (0,0) -- Randomize this
+        -- TODO: Randomize this
+        gen = mkStdGen (floor $ time _world * 1000)
+        x = fromIntegral $ fst $ randomR (-8,7 :: Int) gen
+        y = fromIntegral $ fst $ randomR (-8,7 :: Int) (snd $ next gen)
     in
-        _world { food = newPoint }
+        _world { food = (x, y) }
 
 stepWorld :: Float -> World -> World
-stepWorld _ _world | trace ("Stepping World: " ++ show (_world)) False = undefined
-stepWorld _ _world = 
+stepWorld _time _world | trace ("Stepping World: " ++ show (_time) ++ show (_world)) False = undefined
+stepWorld _time _world = 
     let
+        tailCell = last . body $ snake _world
         movedSnake = moveSnake $ snake _world
     in
-        if position movedSnake == food _world
+        if head (body movedSnake) == food _world
             then
-                moveFood $ _world { snake = movedSnake { len = (len movedSnake) + 1} }
+                moveFood _world { 
+                    snake = movedSnake { 
+                        len = (len movedSnake) + 1,
+                        body = body movedSnake ++ [tailCell]
+                    },
+                    time = (time _world) + _time
+                }
             else
                 _world { snake = movedSnake }
 
 
+displayFood :: World -> Float -> Picture
+-- displayFood _snake cellWidth | trace ("Drawing Food: " ++ show _snake ++ show cellWidth) False = undefined
+displayFood _world cellWidth = 
+    let 
+        offset = fromInteger $ floor (cellWidth / 2)
+        x = fst $ food _world
+        y = snd $ food _world
+    in translate (cellWidth * x + offset) (cellWidth * y + offset) $ color blue $ rectangleSolid cellWidth cellWidth
+                
+
+
 drawWorld :: World -> Float -> Picture
 -- drawWorld _world _cellWidth | trace ("drawWorld(): " ++ (show _world) ) False = undefined
-drawWorld _world _cellWidth = displaySnake (snake _world) _cellWidth
+drawWorld _world _cellWidth = 
+    pictures $ [displayFood _world _cellWidth] ++ [displaySnake (snake _world) _cellWidth] 
