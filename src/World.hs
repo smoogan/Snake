@@ -30,9 +30,9 @@ handleInput event _world
 handleInput _ s = s
 
 stepWorld :: Float -> World -> World
-stepWorld _ _world | trace ("Stepping World: " ++ show (snake _world)) False = undefined
+-- stepWorld _ _world | trace ("Stepping World: " ++ show (snake _world)) False = undefined
 stepWorld _ _world = _world { snake = moveSnake $ snake _world }
 
 drawWorld :: World -> Float -> Picture
-drawWorld _world _cellWidth | trace ("drawWorld(): " ++ show _world ) False = undefined
+-- drawWorld _world _cellWidth | trace ("drawWorld(): " ++ (show _world) ) False = undefined
 drawWorld _world _cellWidth = displaySnake (snake _world) _cellWidth

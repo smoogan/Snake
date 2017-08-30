@@ -42,8 +42,8 @@ grid = [ color white $ line [(x, top), (x, bottom)] | x <- [left, left+cellWidth
         ++ [ color white $ line [(left, x), (right, x)] | x <- [bottom, bottom+cellWidth .. top]]
 
 reDraw :: World -> Picture
-reDraw _world | trace ("Redrawing: " ++ show _world ) False = undefined
-reDraw _world = pictures (grid ++ [drawWorld world cellWidth])
+-- reDraw _world | trace ("Redrawing: " ++ show _world ) False = undefined
+reDraw _world = pictures (grid ++ [drawWorld _world cellWidth])
 
 showWindow :: IO ()
 showWindow = play window background 10 world reDraw handleInput stepWorld
