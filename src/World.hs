@@ -6,13 +6,14 @@ import Debug.Trace
 
 data World = World {
     snake :: Snake,
-    score :: Int
+    score :: Int,
+    food :: Point
 } deriving (Show)
 
 createWorld :: World
 createWorld = 
     let _snake = Snake {position = (0,0), direction = None, len = 1}
-    in World {snake = _snake, score = 0}
+    in World {snake = _snake, score = 0, food=(2,2)}
 
 handleInput :: Event -> World -> World
 handleInput event _world
@@ -29,9 +30,25 @@ handleInput event _world
     = _world { snake = changeDirection (snake _world) East }
 handleInput _ s = s
 
+moveFood :: World -> World
+moveFood _world =
+    let
+        newPoint = (0,0) -- Randomize this
+    in
+        _world { food = newPoint }
+
 stepWorld :: Float -> World -> World
--- stepWorld _ _world | trace ("Stepping World: " ++ show (snake _world)) False = undefined
-stepWorld _ _world = _world { snake = moveSnake $ snake _world }
+stepWorld _ _world | trace ("Stepping World: " ++ show (_world)) False = undefined
+stepWorld _ _world = 
+    let
+        movedSnake = moveSnake $ snake _world
+    in
+        if position movedSnake == food _world
+            then
+                moveFood $ _world { snake = movedSnake { len = (len movedSnake) + 1} }
+            else
+                _world { snake = movedSnake }
+
 
 drawWorld :: World -> Float -> Picture
 -- drawWorld _world _cellWidth | trace ("drawWorld(): " ++ (show _world) ) False = undefined

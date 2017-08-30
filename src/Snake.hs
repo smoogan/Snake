@@ -36,6 +36,9 @@ moveSnake _snake =
 changeDirection :: Snake -> Direction -> Snake
 changeDirection _snake _direction = _snake {direction = _direction}
 
+growSnake :: Snake -> Snake
+growSnake _snake = _snake { len = (len _snake) + 1}
+
 displaySnake :: Snake -> Float -> Picture
 -- displaySnake _snake cellWidth | trace ("Drawing Snake: " ++ show _snake ++ show cellWidth) False = undefined
 displaySnake _snake cellWidth = 
