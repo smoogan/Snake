@@ -14,10 +14,11 @@ data World = World {
 
 createWorld :: World
 createWorld = 
-    let _snake = Snake {body = [(0,0)], direction = None, len = 1}
+    let _snake = Snake {body = [(0,0)], queueDirection = None, direction = None, len = 1, dead = False }
     in World {snake = _snake, score = 0, food=(2,2), time=0}
 
 handleInput :: Event -> World -> World
+handleInput event _world | trace ("Input handling: " ++ show(event) ++ show(_world)) False = undefined
 handleInput event _world
     | EventKey (SpecialKey KeyUp) Down _ (_, _) <- event
     = _world {snake = changeDirection (snake _world) North}
@@ -37,7 +38,7 @@ moveFood _world =
     let
         -- TODO: Randomize this
         gen = mkStdGen (floor $ time _world * 1000)
-        x = fromIntegral $ fst $ randomR (-8,7 :: Int) gen
+        x = fromIntegral $ fst $ randomR (-8,7 :: Int) gen 
         y = fromIntegral $ fst $ randomR (-8,7 :: Int) (snd $ next gen)
     in
         _world { food = (x, y) }
@@ -47,7 +48,7 @@ stepWorld _time _world | trace ("Stepping World: " ++ show (_time) ++ show (_wor
 stepWorld _time _world = 
     let
         tailCell = last . body $ snake _world
-        movedSnake = moveSnake $ snake _world
+        movedSnake = moveSnake $ (snake _world) {direction = queueDirection (snake _world)}
     in
         if head (body movedSnake) == food _world
             then

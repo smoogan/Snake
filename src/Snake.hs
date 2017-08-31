@@ -7,8 +7,10 @@ data Direction = North | South | East | West | None deriving(Enum, Show, Eq)
 
 data Snake = Snake { 
     body :: [Point],
+    queueDirection :: Direction,
     direction :: Direction,
-    len :: Int
+    len :: Int,
+    dead :: Bool
 } deriving (Show)
 
 
@@ -19,20 +21,31 @@ sumTuple (a,b) (c,d) = (a+c, b+d)
 moveSnake :: Snake -> Snake
 -- moveSnake s | trace ("Moving Snake: " ++ show s) False = undefined
 moveSnake _snake = 
-    if onMap newPosition 
-        then _snake { body = [newPosition] ++ init (body _snake)  }
-        else _snake
-        where newPosition
-                | direction _snake == North = sumTuple (head $ body _snake) ( 0, 1)
-                | direction _snake == South = sumTuple (head $ body _snake) ( 0,-1)
-                | direction _snake == East  = sumTuple (head $ body _snake) ( 1, 0)
-                | direction _snake == West  = sumTuple (head $ body _snake) ( -1, 0)
-                | otherwise = head $ body _snake
-              onMap (x, y) = x < 8 && x > -9 && y < 8 && y > -9
+    if direction _snake == None
+        then _snake
+        else if onMap newPosition && not (occupied newPosition)
+            then _snake { body = [newPosition] ++ init (body _snake)  }
+            else _snake { dead = True }
+            where newPosition
+                    | direction _snake == North = sumTuple (head $ body _snake) ( 0, 1)
+                    | direction _snake == South = sumTuple (head $ body _snake) ( 0,-1)
+                    | direction _snake == East  = sumTuple (head $ body _snake) ( 1, 0)
+                    | direction _snake == West  = sumTuple (head $ body _snake) ( -1, 0)
+                    | otherwise = head $ body _snake
+                  onMap (x, y) = x < 8 && x > -9 && y < 8 && y > -9
+                  occupied (x, y) = elem (x, y) (body _snake)
 
 
 changeDirection :: Snake -> Direction -> Snake
-changeDirection _snake _direction = _snake {direction = _direction}
+changeDirection _snake _direction = 
+    if dead _snake 
+        || _direction == direction _snake
+        || (_direction == North && direction _snake == South)
+        || (_direction == South && direction _snake == North)
+        || (_direction == East && direction _snake == West)
+        || (_direction == West && direction _snake == East)
+        then _snake 
+        else _snake {queueDirection = _direction}
 
 growSnake :: Snake -> Snake
 growSnake _snake = _snake { len = (len _snake) + 1}
