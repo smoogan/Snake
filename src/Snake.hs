@@ -5,7 +5,7 @@ import Debug.Trace
 
 data Direction = North | South | East | West | None deriving(Enum, Show, Eq)
 
-data Snake = Snake { 
+data Snake = Snake {
     body :: [Point],
     queueDirection :: Direction,
     direction :: Direction,
@@ -20,7 +20,7 @@ sumTuple (a,b) (c,d) = (a+c, b+d)
 
 moveSnake :: Snake -> Snake
 -- moveSnake s | trace ("Moving Snake: " ++ show s) False = undefined
-moveSnake _snake = 
+moveSnake _snake =
     if direction _snake == None
         then _snake
         else if onMap newPosition && not (occupied newPosition)
@@ -37,28 +37,29 @@ moveSnake _snake =
 
 
 changeDirection :: Snake -> Direction -> Snake
-changeDirection _snake _direction = 
-    if dead _snake 
+changeDirection _snake _direction =
+    if dead _snake
         || _direction == direction _snake
         || (_direction == North && direction _snake == South)
         || (_direction == South && direction _snake == North)
         || (_direction == East && direction _snake == West)
         || (_direction == West && direction _snake == East)
-        then _snake 
+        then _snake
         else _snake {queueDirection = _direction}
 
 growSnake :: Snake -> Snake
 growSnake _snake = _snake { len = (len _snake) + 1}
 
-displaySnake :: Snake -> Float -> Picture
+displaySnake :: Snake -> Int -> Picture
 -- displaySnake _snake cellWidth | trace ("Drawing Snake: " ++ show _snake ++ show cellWidth) False = undefined
 displaySnake _snake cellWidth = pictures $ map (displayCell cellWidth) (body _snake)
 
-displayCell :: Float -> Point -> Picture
-displayCell cellWidth point = 
+displayCell :: Int -> Point -> Picture
+displayCell cellWidth point =
     let
-        offset = fromInteger $ floor (cellWidth / 2)
         x = fst point
         y = snd point
+        offset_x = fromIntegral cellWidth * x + fromIntegral(div cellWidth 2)
+        offset_y = fromIntegral cellWidth * y + fromIntegral(div cellWidth 2)
     in
-        translate (cellWidth * x + offset) (cellWidth * y + offset) $ color red $ rectangleSolid cellWidth cellWidth
+        translate offset_x offset_y $ color red $ rectangleSolid (fromIntegral cellWidth) (fromIntegral cellWidth)

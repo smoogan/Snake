@@ -7,25 +7,14 @@ import Debug.Trace
 
 import World
 
-width :: Int
-width = 400
+width = 400 :: Int
+height = 400 :: Int
+top = div height 2 :: Int
+right = div width 2 :: Int
+bottom = -top :: Int
+left = -right :: Int
 
-height :: Int
-height = 400
-
-top :: Float
-top = (fromIntegral height)/2
-
-left :: Float
-left = -(fromIntegral width)/2
-
-bottom :: Float
-bottom = -top
-
-right :: Float
-right = -left
-
-cellWidth :: Float
+cellWidth :: Int
 cellWidth = 25
 
 window :: Display
@@ -38,8 +27,8 @@ world :: World
 world = createWorld
 
 grid :: [Picture]
-grid = [ color white $ line [(x, top), (x, bottom)] | x <- [left, left+cellWidth .. right]]
-        ++ [ color white $ line [(left, x), (right, x)] | x <- [bottom, bottom+cellWidth .. top]]
+grid = [ color white $ line [(fromIntegral x, fromIntegral top), (fromIntegral x, fromIntegral bottom)] | x <- [left, left+cellWidth .. right]]
+        ++ [ color white $ line [(fromIntegral left, fromIntegral x), (fromIntegral right, fromIntegral x)] | x <- [bottom, bottom+cellWidth .. top]]
 
 reDraw :: World -> Picture
 -- reDraw _world | trace ("Redrawing: " ++ show _world ) False = undefined
