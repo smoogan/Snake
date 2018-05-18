@@ -54,10 +54,10 @@ stepWorld _time _world =
             then
                 moveFood _world {
                     snake = movedSnake {
-                        len = (len movedSnake) + 1,
+                        len = len movedSnake + 1,
                         body = body movedSnake ++ [tailCell]
                     },
-                    time = (time _world) + _time
+                    time = time _world + _time
                 }
             else
                 _world { snake = movedSnake }
@@ -78,4 +78,4 @@ displayFood _world cellWidth =
 drawWorld :: World -> Int -> Picture
 -- drawWorld _world _cellWidth | trace ("drawWorld(): " ++ (show _world) ) False = undefined
 drawWorld _world _cellWidth =
-    pictures $ [displayFood _world _cellWidth] ++ [displaySnake (snake _world) _cellWidth]
+    pictures $ displayFood _world _cellWidth : [displaySnake (snake _world) _cellWidth]
