@@ -9,13 +9,13 @@ data World = World {
     snake :: Snake,
     score :: Int,
     food :: Point,
-    time :: Float
+    gen :: StdGen
 } deriving (Show)
 
 createWorld :: World
 createWorld =
     let _snake = Snake {body = [(0,0)], queueDirection = None, direction = None, len = 1, dead = False }
-    in World {snake = _snake, score = 0, food=(2,2), time=0}
+    in World {snake = _snake, score = 0, food=(2,2), gen=mkStdGen 0}
 
 handleInput :: Event -> World -> World
 -- handleInput event _world | trace ("Input handling: " ++ show(event) ++ show(_world)) False = undefined
@@ -33,18 +33,18 @@ handleInput event _world
     = _world { snake = changeDirection (snake _world) East }
 handleInput _ s = s
 
+-- TODO: Avoid posibility of food being placed on Snake
 moveFood :: World -> World
 moveFood _world =
     let
-        -- TODO: Randomize this
-        gen = mkStdGen (floor $ time _world * 1000)
-        x = fromIntegral $ fst $ randomR (-8,7 :: Int) gen
-        y = fromIntegral $ fst $ randomR (-8,7 :: Int) (snd $ next gen)
+        g0 = gen _world
+        (x, g1) = randomR (-8,7 :: Int) g0
+        (y, g2) = randomR (-8,7 :: Int) g1
     in
-        _world { food = (x, y) }
+        _world { food = (fromIntegral x, fromIntegral y), gen = g2 }
 
 stepWorld :: Float -> World -> World
--- stepWorld _time _world | trace ("Stepping World: " ++ show (_time) ++ show (_world)) False = undefined
+-- stepWorld _world | trace ("Stepping World: " ++ show (_world)) False = undefined
 stepWorld _time _world =
     let
         tailCell = last . body $ snake _world
@@ -56,8 +56,7 @@ stepWorld _time _world =
                     snake = movedSnake {
                         len = len movedSnake + 1,
                         body = body movedSnake ++ [tailCell]
-                    },
-                    time = time _world + _time
+                    }
                 }
             else
                 _world { snake = movedSnake }
