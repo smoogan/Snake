@@ -3,12 +3,18 @@ module Lib
     ) where
 
 import Graphics.Gloss
+import Graphics.Gloss.Interface.IO.Game
 import Debug.Trace
 
 import World
+import Snake
+import Utils
 
+-- Window Size
 width = 400 :: Int
 height = 400 :: Int
+
+-- Window Coordinates
 top = div height 2 :: Int
 right = div width 2 :: Int
 bottom = -top :: Int
@@ -36,3 +42,19 @@ reDraw _world = pictures (grid ++ [drawWorld _world cellWidth])
 
 showWindow :: IO ()
 showWindow = play window background 10 world reDraw handleInput stepWorld
+
+handleInput :: Event -> World -> World
+-- handleInput event _world | trace ("Input handling: " ++ show(event) ++ show(_world)) False = undefined
+handleInput event _world
+    | EventKey (SpecialKey KeyUp) Down _ (_, _) <- event
+    = _world {snake = changeDirection (snake _world) North}
+
+    | EventKey (SpecialKey KeyDown) Down _ (_, _) <- event
+    = _world { snake = changeDirection (snake _world) South }
+
+    | EventKey (SpecialKey KeyLeft) Down _ (_, _) <- event
+    = _world { snake = changeDirection (snake _world) West }
+
+    | EventKey (SpecialKey KeyRight) Down _ (_, _) <- event
+    = _world { snake = changeDirection (snake _world) East }
+handleInput _ s = s

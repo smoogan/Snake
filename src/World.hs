@@ -1,9 +1,11 @@
 module World where
 
-import Graphics.Gloss.Interface.IO.Game
 import Snake
 import Debug.Trace
 import System.Random
+import Graphics.Gloss.Interface.IO.Game
+
+import Utils
 
 data World = World {
     snake :: Snake,
@@ -13,25 +15,17 @@ data World = World {
 } deriving (Show)
 
 createWorld :: World
-createWorld =
-    let _snake = Snake {body = [(0,0)], queueDirection = None, direction = None, len = 1, dead = False }
-    in World {snake = _snake, score = 0, food=(2,2), gen=mkStdGen 0}
+createWorld = World {
+        score = 0,
+        food=(2,2),
+        snake = Snake {
+            body = [(0,0)],
+            queueDirection = None,
+            direction = None,
+            len = 1,
+            dead = False },
+        gen=mkStdGen 0 }
 
-handleInput :: Event -> World -> World
--- handleInput event _world | trace ("Input handling: " ++ show(event) ++ show(_world)) False = undefined
-handleInput event _world
-    | EventKey (SpecialKey KeyUp) Down _ (_, _) <- event
-    = _world {snake = changeDirection (snake _world) North}
-
-    | EventKey (SpecialKey KeyDown) Down _ (_, _) <- event
-    = _world { snake = changeDirection (snake _world) South }
-
-    | EventKey (SpecialKey KeyLeft) Down _ (_, _) <- event
-    = _world { snake = changeDirection (snake _world) West }
-
-    | EventKey (SpecialKey KeyRight) Down _ (_, _) <- event
-    = _world { snake = changeDirection (snake _world) East }
-handleInput _ s = s
 
 -- TODO: Avoid posibility of food being placed on Snake
 moveFood :: World -> World

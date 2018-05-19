@@ -2,8 +2,7 @@ module Snake where
 
 import Graphics.Gloss
 import Debug.Trace
-
-data Direction = North | South | East | West | None deriving(Enum, Show, Eq)
+import Utils
 
 data Snake = Snake {
     body :: [Point],
@@ -14,9 +13,6 @@ data Snake = Snake {
 } deriving (Show)
 
 
-sumTuple :: (Float, Float) -> (Float, Float) -> (Float, Float)
--- sumTuple a b | trace ("Adding tuples: " ++ show a ++ " and " ++ show b) False = undefined
-sumTuple (a,b) (c,d) = (a+c, b+d)
 
 moveSnake :: Snake -> Snake
 -- moveSnake s | trace ("Moving Snake: " ++ show s) False = undefined
@@ -48,6 +44,7 @@ changeDirection _snake _direction =
 growSnake :: Snake -> Snake
 growSnake _snake = _snake { len = len _snake + 1}
 
+-- TODO: Move into Lib.hs
 displaySnake :: Snake -> Int -> Picture
 -- displaySnake _snake cellWidth | trace ("Drawing Snake: " ++ show _snake ++ show cellWidth) False = undefined
 displaySnake _snake cellWidth = pictures $ map (displayCell cellWidth) (body _snake)

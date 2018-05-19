@@ -16,6 +16,7 @@ library
   exposed-modules:     Lib
                      , Snake
                      , World
+                     , Utils
   build-depends:       base >= 4.7 && < 5
                      , gloss
                      , random
