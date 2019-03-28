@@ -9,6 +9,7 @@ import Debug.Trace
 import World
 import Snake
 import Utils
+import Display
 
 -- Window Size
 width = 400 :: Int
@@ -22,6 +23,9 @@ left = -right :: Int
 
 cellWidth :: Int
 cellWidth = 25
+
+tickRate :: Int
+tickRate = 10
 
 window :: Display
 window = InWindow "Snake" (width, height) (10, 10)
@@ -41,7 +45,7 @@ reDraw :: World -> Picture
 reDraw _world = pictures (grid ++ [drawWorld _world cellWidth])
 
 showWindow :: IO ()
-showWindow = play window background 10 world reDraw handleInput stepWorld
+showWindow = play window background tickRate world reDraw handleInput stepWorld
 
 handleInput :: Event -> World -> World
 -- handleInput event _world | trace ("Input handling: " ++ show(event) ++ show(_world)) False = undefined

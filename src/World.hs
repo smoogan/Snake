@@ -54,21 +54,3 @@ stepWorld _time _world =
                 }
             else
                 _world { snake = movedSnake }
-
-
-displayFood :: World -> Int -> Picture
--- displayFood _snake cellWidth | trace ("Drawing Food: " ++ show _snake ++ show cellWidth) False = undefined
-displayFood _world cellWidth =
-    let
-        x = fst $ food _world
-        y = snd $ food _world
-        offset_x = fromIntegral cellWidth * x + fromIntegral(div cellWidth 2)
-        offset_y = fromIntegral cellWidth * y + fromIntegral(div cellWidth 2)
-    in translate offset_x offset_y $ color blue $ rectangleSolid (fromIntegral cellWidth) (fromIntegral cellWidth)
-
-
-
-drawWorld :: World -> Int -> Picture
--- drawWorld _world _cellWidth | trace ("drawWorld(): " ++ (show _world) ) False = undefined
-drawWorld _world _cellWidth =
-    pictures $ displayFood _world _cellWidth : [displaySnake (snake _world) _cellWidth]

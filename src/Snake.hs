@@ -43,18 +43,3 @@ changeDirection _snake _direction =
 
 growSnake :: Snake -> Snake
 growSnake _snake = _snake { len = len _snake + 1}
-
--- TODO: Move into Lib.hs
-displaySnake :: Snake -> Int -> Picture
--- displaySnake _snake cellWidth | trace ("Drawing Snake: " ++ show _snake ++ show cellWidth) False = undefined
-displaySnake _snake cellWidth = pictures $ map (displayCell cellWidth) (body _snake)
-
-displayCell :: Int -> Point -> Picture
-displayCell cellWidth point =
-    let
-        x = fst point
-        y = snd point
-        offset_x = fromIntegral cellWidth * x + fromIntegral(div cellWidth 2)
-        offset_y = fromIntegral cellWidth * y + fromIntegral(div cellWidth 2)
-    in
-        translate offset_x offset_y $ color red $ rectangleSolid (fromIntegral cellWidth) (fromIntegral cellWidth)
