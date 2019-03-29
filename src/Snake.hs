@@ -18,7 +18,8 @@ moveSnake :: Snake -> Snake
 -- moveSnake s | trace ("Moving Snake: " ++ show s) False = undefined
 moveSnake _snake
     | direction _snake == None = _snake
-    | onMap newPosition && not (occupied newPosition) = _snake { body = newPosition : init (body _snake)  }
+    | onMap newPosition && not (snakeOccupiesPoint _snake newPosition)
+        = _snake { body = newPosition : init (body _snake) }
     | otherwise = _snake { dead = True }
     where newPosition
             | direction _snake == North = sumTuple (head $ body _snake) ( 0, 1)
@@ -27,8 +28,9 @@ moveSnake _snake
             | direction _snake == West  = sumTuple (head $ body _snake) ( -1, 0)
             | otherwise = head $ body _snake
           onMap (x, y) = x < 8 && x > -9 && y < 8 && y > -9
-          occupied (x, y) = (x, y) `elem` body _snake
 
+snakeOccupiesPoint :: Snake -> (Float, Float) -> Bool
+snakeOccupiesPoint _snake (x, y) = (x, y) `elem` body _snake
 
 changeDirection :: Snake -> Direction -> Snake
 changeDirection _snake _direction =

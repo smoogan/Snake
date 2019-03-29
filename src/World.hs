@@ -26,16 +26,21 @@ createWorld _g = World {
             dead = False },
         gen = _g }
 
-
 -- TODO: Avoid posibility of food being placed on Snake
 moveFood :: World -> World
 moveFood _world =
     let
+        emptySpaces = [
+            (x,y) |
+                x <- [-8..7],
+                y <- [-8..7],
+                not $ snakeOccupiesPoint (snake _world) (x,y) ]
         g0 = gen _world
-        (x, g1) = randomR (-8,7 :: Int) g0
-        (y, g2) = randomR (-8,7 :: Int) g1
+        listLen = length emptySpaces
+        (pointIndex, newGen) = randomR (0, listLen-1 :: Int) g0
+        (x, y) = emptySpaces !! pointIndex
     in
-        _world { food = (fromIntegral x, fromIntegral y), gen = g2 }
+        _world { food = (x, y), gen = newGen }
 
 stepWorld :: Float -> World -> World
 -- stepWorld _world | trace ("Stepping World: " ++ show (_world)) False = undefined
