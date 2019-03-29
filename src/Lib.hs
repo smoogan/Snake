@@ -5,6 +5,7 @@ module Lib
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 import Debug.Trace
+import System.Random
 
 import World
 import Snake
@@ -33,9 +34,6 @@ window = InWindow "Snake" (width, height) (10, 10)
 background :: Color
 background = black
 
-world :: World
-world = createWorld
-
 grid :: [Picture]
 grid = [ color white $ line [(fromIntegral x, fromIntegral top), (fromIntegral x, fromIntegral bottom)] | x <- [left, left+cellWidth .. right]]
         ++ [ color white $ line [(fromIntegral left, fromIntegral x), (fromIntegral right, fromIntegral x)] | x <- [bottom, bottom+cellWidth .. top]]
@@ -45,7 +43,16 @@ reDraw :: World -> Picture
 reDraw _world = pictures (grid ++ [drawWorld _world cellWidth])
 
 showWindow :: IO ()
-showWindow = play window background tickRate world reDraw handleInput stepWorld
+showWindow = do
+    randomGen <- newStdGen
+    play
+        window
+        background
+        tickRate
+        (createWorld randomGen)
+        reDraw
+        handleInput
+        stepWorld
 
 handleInput :: Event -> World -> World
 -- handleInput event _world | trace ("Input handling: " ++ show(event) ++ show(_world)) False = undefined

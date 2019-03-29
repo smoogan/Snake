@@ -14,17 +14,17 @@ data World = World {
     gen :: StdGen
 } deriving (Show)
 
-createWorld :: World
-createWorld = World {
+createWorld :: StdGen -> World
+createWorld _g = World {
         score = 0,
-        food=(2,2),
+        food = (2,2),
         snake = Snake {
             body = [(0,0)],
             queueDirection = None,
             direction = None,
             len = 1,
             dead = False },
-        gen=mkStdGen 0 }
+        gen = _g }
 
 
 -- TODO: Avoid posibility of food being placed on Snake
