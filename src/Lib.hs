@@ -22,25 +22,30 @@ right = div width 2 :: Int
 bottom = -top :: Int
 left = -right :: Int
 
-cellWidth :: Int
-cellWidth = 25
-
-tickRate :: Int
-tickRate = 10
+cellWidth = 25 :: Int
+tickRate = 10 :: Int
 
 window :: Display
-window = InWindow "Snake" (width, height) (10, 10)
+window = InWindow "Snake" (width, height) (100, 100)
 
 background :: Color
 background = black
 
+point :: (Int, Int) -> (Float, Float)
+point (x,y) = (fromIntegral x, fromIntegral y)
+
 grid :: [Picture]
-grid = [ color white $ line [(fromIntegral x, fromIntegral top), (fromIntegral x, fromIntegral bottom)] | x <- [left, left+cellWidth .. right]]
-        ++ [ color white $ line [(fromIntegral left, fromIntegral x), (fromIntegral right, fromIntegral x)] | x <- [bottom, bottom+cellWidth .. top]]
+grid = [ line [point(x, top), point(x, bottom)]
+                | x <- [left, left+cellWidth .. right]]
+        ++ [ line [point(left, x), point(right, x)]
+                | x <- [bottom, bottom+cellWidth .. top]]
+
+colorGrid :: [Picture]
+colorGrid = [color white _line | _line <- grid]
 
 reDraw :: World -> Picture
 -- reDraw _world | trace ("Redrawing: " ++ show _world ) False = undefined
-reDraw _world = pictures (grid ++ [drawWorld _world cellWidth])
+reDraw _world = pictures (colorGrid ++ [drawWorld _world cellWidth])
 
 showWindow :: IO ()
 showWindow = do
