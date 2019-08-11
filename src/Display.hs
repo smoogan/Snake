@@ -5,7 +5,6 @@ import Snake
 import World
 
 displayFood :: World -> Int -> Picture
--- displayFood _snake cellWidth | trace ("Drawing Food: " ++ show _snake ++ show cellWidth) False = undefined
 displayFood _world cellWidth =
     let
         x = fst $ food _world
@@ -16,13 +15,11 @@ displayFood _world cellWidth =
 
 
 drawWorld :: World -> Int -> Picture
--- drawWorld _world _cellWidth | trace ("drawWorld(): " ++ (show _world) ) False = undefined
 drawWorld _world _cellWidth =
     pictures $ displayFood _world _cellWidth : [displaySnake (snake _world) _cellWidth]
 
 
 displaySnake :: Snake -> Int -> Picture
--- displaySnake _snake cellWidth | trace ("Drawing Snake: " ++ show _snake ++ show cellWidth) False = undefined
 displaySnake _snake cellWidth = pictures $ map (displayCell cellWidth) (body _snake)
 
 displayCell :: Int -> Point -> Picture

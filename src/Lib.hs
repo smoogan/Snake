@@ -44,7 +44,6 @@ colorGrid :: [Picture]
 colorGrid = [color white _line | _line <- grid]
 
 reDraw :: World -> Picture
--- reDraw _world | trace ("Redrawing: " ++ show _world ) False = undefined
 reDraw _world = pictures (colorGrid ++ [drawWorld _world cellWidth])
 
 showWindow :: IO ()
@@ -60,7 +59,6 @@ showWindow = do
         stepWorld
 
 handleInput :: Event -> World -> World
--- handleInput event _world | trace ("Input handling: " ++ show(event) ++ show(_world)) False = undefined
 handleInput event _world
     | EventKey (SpecialKey KeyUp) Down _ (_, _) <- event
     = _world {snake = changeDirection (snake _world) North}

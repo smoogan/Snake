@@ -15,7 +15,6 @@ data Snake = Snake {
 
 
 moveSnake :: Snake -> Snake
--- moveSnake s | trace ("Moving Snake: " ++ show s) False = undefined
 moveSnake _snake
     | direction _snake == None = _snake
     | onMap newPosition && not (snakeOccupiesPoint _snake newPosition)

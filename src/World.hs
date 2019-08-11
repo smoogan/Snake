@@ -49,7 +49,6 @@ moveFood _world =
 
 -- Move the world forward one iteration (i.e. Snake takes a step forward)
 stepWorld :: Float -> World -> World
--- stepWorld _world | trace ("Stepping World: " ++ show (_world)) False = undefined
 stepWorld _time _world =
     let
         tailCell = last . body $ snake _world
